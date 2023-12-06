@@ -1,17 +1,23 @@
 import React from "react";
-import styled from "styled-components";
+import { useSelector } from "react-redux";
+import styled, { css } from "styled-components";
 
 const Wrapper = styled.div`
   margin: 0;
   padding: 0;
-  display: inline;
   height: 100%;
+  display: inline;
+  ${({ open }) =>
+    !open &&
+    css`
+      display: none;
+    `}
 
   .sidebar {
-    width: 240px;
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
+    width: 200px;
+    background-color: #fff;
+    color: #000;
+    padding-left: 20px;
   }
 
   .sidebar ul {
@@ -24,7 +30,7 @@ const Wrapper = styled.div`
   }
 
   .sidebar a {
-    color: #fff;
+    color: #000;
     text-decoration: none;
   }
 
@@ -32,32 +38,40 @@ const Wrapper = styled.div`
     flex: 1;
     padding: 20px;
   }
+
+  .horizontal-line {
+    border-top: 1px solid #ccc; /* 가로선 스타일을 지정하세요 */
+    width: 100%; /* 가로선의 너비를 지정하세요 */
+  }
 `;
 
 function Sidebar() {
-  console.log('sidebar');
+  console.log("sidebar");
+  const { open } = useSelector((state) => state.sidebar);
   return (
-    <Wrapper>
+    <Wrapper open={open}>
       <div className="sidebar">
         <ul>
           <li>
-            <a href="">홈</a>
+            <a href="/">홈</a>
           </li>
           <li>
-            <a href="#">Shorts</a>
+            <a href="/">Shorts</a>
           </li>
           <li>
-            <a href="#">구독</a>
+            <a href="/">구독</a>
           </li>
-          <br />
+          <div class="horizontal-line"></div>
           <li>
-            <a href="#">보관함</a>
+            <a href="/">보관함</a>
           </li>
-          <br />
+          <div class="horizontal-line"></div>
           <li>구독</li>
           <br />
+          <div class="horizontal-line"></div>
           <li>탐색</li>
           <br />
+          <div class="horizontal-line"></div>
           <li>설정</li>
           <li>신고 기록</li>
           <li>고객센터</li>

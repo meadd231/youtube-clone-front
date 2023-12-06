@@ -8,14 +8,17 @@ import {
   Link,
   BrowserRouter,
 } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/navbar/Navbar";
 import Sidebar from "./components/Sidebar";
 
 import Home from './pages/Home';
+import Watch from "./pages/Watch";
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import VideoUpload from './pages/VideoUpload';
+import Studio from "./pages/Studio";
 
-const handleToggleSidebar = () => {};
+import Auth from './hooks/auth';
 
 const ContentWrapper = styled.div.attrs({ className: 'content' })`
   display: flex;
@@ -31,8 +34,11 @@ function AppRouter() {
         <Sidebar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/watch/:videoId" element={<Watch />} />
+          <Route path="/login" element={Auth(Login, false)} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/video/upload" element={Auth(VideoUpload, true)} />
+          <Route path="/studio" element={Auth(Studio, true)} />
         </Routes>
       </ContentWrapper>
     </BrowserRouter>

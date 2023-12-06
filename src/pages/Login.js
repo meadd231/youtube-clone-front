@@ -3,21 +3,16 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { StyledAuth } from "./Signup";
 import useInput from "../hooks/useInput";
-import { login } from "../reducers/user";
+import { loginSuccess } from "../reducers/user";
+import { GoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const loginSuccess = (token) => {
-  return {
-    type: 'LOGIN_SUCCESS',
-    payload: { token },
-  };
-};
-
 const logout = () => {
   return {
-    type: 'LOGOUT',
+    type: "LOGOUT",
   };
 };
 
@@ -26,6 +21,22 @@ const Login = () => {
 
   const email = useInput("");
   const password = useInput("");
+
+  const googleLogin = (res) => {
+    const credential = res.credential;
+    axios
+      .post("http://localhost:3001/api/auth/google-oauth", {
+        credential,
+      })
+      .then((res) => {
+        console.log("post api/auth/google-oauth", res);
+        console.log("token", res.data.token);
+        dispatch(loginSuccess(res.data.token));
+      })
+      .catch((err) => {
+        console.error("post api/auth/google-oauth", err);
+      });
+  };
 
   // 이벤트 핸들러
   const handleLogin = (e) => {
@@ -45,21 +56,21 @@ const Login = () => {
       password.setValue("");
     };
 
-    console.log('payload', payload);
+    console.log("payload", payload);
     clearForm();
 
     // payload는 req의 body 키로 전송된다.
-    axios.post('http://localhost:3001/api/login', payload)
-    .then((res) => {
-      console.log('res', res);
+    axios.post("http://localhost:3001/api/auth/login", payload).then((res) => {
+      console.log("res", res);
       const token = res.data.token;
-      // 지연처리를 말하는 건가? dispatch를 하면 이 작업이 끝난 뒤에 프론트 UI의 갱신이라던가 그런 게 발생하도록 하는 그런 거 같은데?
       // dispatch는 redux store에 액션을 전달한다.
       dispatch(loginSuccess(token));
-    })
+    });
 
     // dispatch(login({ payload, clearForm }));
   };
+  const clientId =
+    "1068422300037-8dbd9nkbtoriimouhcta0091nmn3fc0i.apps.googleusercontent.com";
 
   return (
     <StyledAuth>
@@ -77,6 +88,14 @@ const Login = () => {
           value={password.value}
           onChange={password.onChange}
         />
+        <GoogleOAuthProvider clientId={clientId}>
+          <GoogleLogin
+            onSuccess={googleLogin}
+            onFailure={(err) => {
+              console.log(err);
+            }}
+          />
+        </GoogleOAuthProvider>
         <div className="action input-group">
           <Link to={"/signup"}>
             <button>Signup instead</button>

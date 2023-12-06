@@ -1,6 +1,47 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
+export const createAxiosInstance = (token) => {
+  const axiosInstance = axios.create({
+    baseURL: "http://localhost:3001",
+    headers: {
+      "Cache-Control": "no-cache",
+      authorization: `Bearer ${token}`, // authorization 헤더에 토큰을 추가
+    },
+  });
+  return axiosInstance;
+}
+
+export const processDate = (datetime) => {
+  return datetime.substring(0, 10);
+}
+
+export const relativeDate = (datetime) => {
+  const date = new Date(datetime);
+  const now = new Date();
+  const diff = now - date;
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const months = Math.floor(days / 30);
+  const years = Math.floor(months / 12);
+  
+  if (years > 0) {
+    return `${years} 년 전`;
+  } else if (months > 0) {
+    return `${months}개월 전`;
+  } else if (days > 0) {
+    return `${days}일 전`;
+  } else if (hours > 0) {
+    return `${hours}시간 전`;
+  } else if (minutes > 0) {
+    return `${minutes}분 전`;
+  } else {
+    return `${seconds}초 전`;
+  }
+}
+
 export const client = async (endpoint, { body, ...customConfig } = {}) => {
   const user = JSON.parse(localStorage.getItem("user"));
 

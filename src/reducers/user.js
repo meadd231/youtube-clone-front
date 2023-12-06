@@ -76,19 +76,65 @@ const initialState = {
   token: null,
 };
 
+export const loginSuccess = (token) => {
+  return {
+    type: "LOGIN_SUCCESS",
+    payload: { token },
+  };
+};
+
+export const logout = () => {
+  return {
+    type: "LOGOUT",
+  };
+};
+
+export const avatarChange = (avatar) => {
+  return {
+    type: "AVATAR_CHANGE",
+    payload: { avatar}
+  }
+};
+
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case 'LOGIN_SUCCESS':
+    case "LOGIN_SUCCESS":
+      const [header, payload, signature] = action.payload.token.split(".");
+      // Base64 디코딩 후 JSON 파싱
+      let decodedPayload = {};
+      try {
+        const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+        decodedPayload = JSON.parse(
+          decodeURIComponent(
+            window
+              .atob(base64)
+              .split("")
+              .map(function (c) {
+                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+              })
+              .join("")
+          )
+        );
+        console.log("Decoded Payload:", decodedPayload);
+      } catch (error) {
+        console.error("디코딩 에러", error);
+      }
       return {
         ...state,
         token: action.payload.token,
+        userData: { ...decodedPayload },
       };
-    case 'LOGOUT':
+    case "LOGOUT":
       return {
         ...state,
         token: null,
       };
+    case "AVATAR_CHANGE":
+      return {
+        ...state,
+        userData: { ...state.userData, avatar: action.payload.avatar },
+      };
     default:
       return state;
   }
-};
+}
