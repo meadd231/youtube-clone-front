@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 export const createAxiosInstance = (token) => {
   const axiosInstance = axios.create({
-    baseURL: "http://localhost:3001",
+    baseURL: `${process.env.REACT_APP_SERVER_URL}`,
     headers: {
       "Cache-Control": "no-cache",
       authorization: `Bearer ${token}`, // authorization 헤더에 토큰을 추가
