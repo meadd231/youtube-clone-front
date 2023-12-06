@@ -121,7 +121,7 @@ const Signup = () => {
 
   return (
     <StyledAuth>
-      <h2>Create your account</h2>
+      <h2>회원가입</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
           <input
@@ -165,7 +165,7 @@ const Signup = () => {
         </div>
         <div className="action input-group">
           <button>Signin instead</button>
-          <button>Sign Up</button>
+          <button>회원가입</button>
         </div>
       </form>
     </StyledAuth>
