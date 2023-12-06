@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Avatar } from "antd";
-import { Link } from "react-router-dom";
 
 import VideoCard from "../components/VideoCard";
-
-import { relativeDate } from "../utils";
 
 const Wrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: minmax(200px, auto);
   gap: 20px;
   flex: 1;
   margin: 0 16px;
 
   .grid-item {
-    background-color: #f0f0f0;
-    padding: 20px;
+    max-width:360px;
     height: 300px;
   }
 `;
@@ -41,12 +37,12 @@ function Home() {
   const videoCards = Videos.map((video, i) => {
     return (
       <div className="grid-item" key={i}>
-        <VideoCard video={video}/>
+        <VideoCard video={video} />
       </div>
     );
   });
   console.log("videoCards", videoCards);
-  return <Wrapper>{videoCards}</Wrapper>;
+  return <Wrapper id="grid-container">{videoCards}</Wrapper>;
 }
 
 export default Home;

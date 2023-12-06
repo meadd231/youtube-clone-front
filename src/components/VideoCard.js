@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Avatar } from "antd";
 import { relativeDate } from "../utils";
 
-
 function VideoCard({ video }) {
   return (
     <Link
@@ -12,21 +11,24 @@ function VideoCard({ video }) {
       style={{ textDecoration: "none", color: "inherit" }}
     >
       <img
-        alt={"thumbnail"}
-        style={{ width: "100%", height: "200px" }}
-        src={"http://localhost:3001/uploads/thumbnails/" + video.thumbnail}
+        alt="thumbnail"
+        style={{ width: "100%", height: "200px", borderRadius: "16px" }}
+        src={
+          `${process.env.REACT_APP_SERVER_URL}/uploads/thumbnails/` +
+          video.thumbnail
+        }
       />
-      <div style={{ display: "flex" }}>
+      <div id="details" style={{ display: "flex", marginTop: "5px" }}>
         <Avatar
-          src={`http://localhost:3001/uploads/avatars/${video.author.avatar}`}
+          src={`${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${video.author.avatar}`}
         />
-        <div>
+        <div id="meta" style={{ paddingLeft: "16px" }}>
           <div
             style={{ color: "#0f0f0f", fontSize: "16px", fontWeight: "500" }}
           >
             {video.title}
           </div>
-          <div style={{ color: "#606060", fontSize: "14px" }}>
+          <div style={{ color: "#606060", fontSize: "14px", marginTop: "3px" }}>
             <div id="writer">{video.author.nickname}</div>
             <span>조회수 {video.views}</span>
             <span> · </span>
