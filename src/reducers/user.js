@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import { authenticate } from "../utils";
 
 // 이게 뭘까? login reducder 함수가 있네.
@@ -27,51 +27,6 @@ export const signup = createAsyncThunk(
   }
 );
 
-// const userSlice = createSlice({
-//   name: "user",
-//   initialState: {
-//     data: JSON.parse(localStorage.getItem("user")) || {},
-//   },
-//   reducers: {
-//     addChannel(state, action) {
-//       state.data = {
-//         ...state.data,
-//         channels: [action.payload, ...state.data.channels],
-//       };
-//     },
-//     removeChannel(state, action) {
-//       state.data = {
-//         ...state.data,
-//         channels: state.data.channels.filter(
-//           (channel) => channel.id !== action.payload
-//         ),
-//       };
-//     },
-//     updateUser(state, action) {
-//       state.data = {
-//         ...state.data,
-//         ...action.payload,
-//       };
-//     },
-//     logout(state, action) {
-//       state.data = {};
-//     },
-//   },
-//   extraReducers: {
-//     [login.fulfilled]: (state, action) => {
-//       state.data = action.payload || {};
-//     },
-//     [signup.fulfilled]: (state, action) => {
-//       state.data = action.payload || {};
-//     },
-//   },
-// });
-
-// export const { addChannel, removeChannel, updateUser, logout } =
-//   userSlice.actions;
-
-// export default userSlice.reducer;
-
 const initialState = {
   token: null,
 };
@@ -99,7 +54,7 @@ export const avatarChange = (avatar) => {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case "LOGIN_SUCCESS":
-      const [header, payload, signature] = action.payload.token.split(".");
+      const payload = action.payload.token.split(".")[1]; // [header, payload, signature]로 분리된다.
       // Base64 디코딩 후 JSON 파싱
       let decodedPayload = {};
       try {
