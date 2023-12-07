@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import styled, { css } from "styled-components";
 
 import { Avatar, Button } from "antd";
 import { Comment } from "@ant-design/compatible";
@@ -14,9 +13,6 @@ import {
 import { relativeDate, createAxiosInstance } from "../utils";
 import useInput from "../hooks/useInput";
 
-/**
- * commentType => comment or reply
- */
 function CommentCard({
   comment,
   replyToCommentId,
@@ -26,7 +22,6 @@ function CommentCard({
   const [Liked, setLiked] = useState(comment.liked);
   const [Likes, setLikes] = useState(comment.likes);
   const [Disliked, setDisliked] = useState(comment.disliked);
-  // 여기에다가 state로 관리할까? 아니면 뭘로 관리해? state가 낫지 않을까? 댓글 전체가 바뀌는 건 아닐텐데.
   const [ReplyInputOpened, setReplyInputOpened] = useState(false);
   const openReply = () => {
     setReplyInputOpened(!ReplyInputOpened);
@@ -46,10 +41,10 @@ function CommentCard({
       .post("/api/comments/replies/reply", reqBody)
       .then((res) => {
         if (res.data.success) {
-          replyInput.setValue("");
           console.log("post /api/comments/reply", res.data);
+          replyInput.setValue("");
           addReplyToComment(res.data.reply);
-          // reply 화면 갱신해주기.
+          setReplyInputOpened(false);
         } else {
           alert("답글 작성 실패");
         }

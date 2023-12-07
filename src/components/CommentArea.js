@@ -5,7 +5,6 @@ import { Avatar, Button, Dropdown, Menu } from "antd";
 
 // components
 import CommentView from "./CommentView";
-import ReplyComment from "./ReplyArea";
 
 // utils
 import useInput from "../hooks/useInput";
@@ -118,9 +117,10 @@ function CommentArea({ video }) {
     createAxiosInstance(token)
       .post("/api/comments/comment", { content: comment.value, videoId: video.id })
       .then((res) => {
-        comment.setValue("");
         console.log("post /api/comments/comment", res.data.comment);
+        comment.setValue("");
         setComments([res.data.comment, ...Comments]);
+        setCommentClicked(false);
       })
       .catch((err) => {
         console.error("post /api/comments/comment", err);
@@ -178,7 +178,6 @@ function CommentArea({ video }) {
                 <CommentView
                   comment={comment}
                   key={comment.id}
-                  // refreshFunction={props.refreshFunction}
                 />
               )
           )}
