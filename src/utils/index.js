@@ -9,12 +9,33 @@ export const createAxiosInstance = (token) => {
       authorization: `Bearer ${token}`, // authorization 헤더에 토큰을 추가
     },
   });
+  // axios interceptors는 봉인해두고 나중에 사용하도록 하자.
+  // axiosInstance.interceptors.response.use(
+  //   (response) => {
+  //     // 응답 코드 200번대 일 때 이 함수 호출
+  //     console.log('interceptors', response);
+  //     return response;
+  //   },
+  //   (error) => {
+  //     // 응답 코드 200번대 이외에서 이 함수 호출
+  //     if (error.response && error.response.status) {
+  //       switch (error.response.status) {
+  //         // status code가 401인 경우 `logout`을 커밋하고 `/login` 페이지로 리다이렉트
+  //         case 401:
+  //           toast("로그인이 올바르지 않습니다.");
+  //           break;
+  //         default:
+  //           return Promise.reject(error);
+  //       }
+  //     }
+  //   }
+  // );
   return axiosInstance;
-}
+};
 
 export const processDate = (datetime) => {
   return datetime.substring(0, 10);
-}
+};
 
 export const relativeDate = (datetime) => {
   const date = new Date(datetime);
@@ -26,7 +47,7 @@ export const relativeDate = (datetime) => {
   const days = Math.floor(hours / 24);
   const months = Math.floor(days / 30);
   const years = Math.floor(months / 12);
-  
+
   if (years > 0) {
     return `${years} 년 전`;
   } else if (months > 0) {
@@ -40,7 +61,7 @@ export const relativeDate = (datetime) => {
   } else {
     return `${seconds}초 전`;
   }
-}
+};
 
 export const client = async (endpoint, { body, ...customConfig } = {}) => {
   const user = JSON.parse(localStorage.getItem("user"));
