@@ -7,14 +7,9 @@ import { loginSuccess } from "../reducers/user";
 import { GoogleLogin } from "@react-oauth/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { createAxiosInstance } from "../utils";
 
-const logout = () => {
-  return {
-    type: "LOGOUT",
-  };
-};
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -24,8 +19,8 @@ const Login = () => {
 
   const googleLogin = (res) => {
     const credential = res.credential;
-    axios
-      .post("http://localhost:3001/api/auth/google-oauth", {
+    createAxiosInstance()
+      .post("/api/auth/google-oauth", {
         credential,
       })
       .then((res) => {
@@ -60,7 +55,7 @@ const Login = () => {
     clearForm();
 
     // payload는 req의 body 키로 전송된다.
-    axios.post("http://localhost:3001/api/auth/login", payload).then((res) => {
+    createAxiosInstance().post("/api/auth/login", payload).then((res) => {
       console.log("res", res);
       const token = res.data.token;
       // dispatch는 redux store에 액션을 전달한다.
@@ -74,7 +69,7 @@ const Login = () => {
 
   return (
     <StyledAuth>
-      <h2>Login to your account</h2>
+      <h2>로그인</h2>
       <form onSubmit={handleLogin}>
         <input
           type="email"
@@ -98,9 +93,9 @@ const Login = () => {
         </GoogleOAuthProvider>
         <div className="action input-group">
           <Link to={"/signup"}>
-            <button>Signup instead</button>
+            <button>회원가입</button>
           </Link>
-          <button>Login</button>
+          <button>로그인</button>
         </div>
       </form>
     </StyledAuth>

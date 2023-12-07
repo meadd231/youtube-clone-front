@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Typography, Button, Form, message, Input } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import Dropzone from "react-dropzone";
-import axios from "axios";
 import { useSelector } from "react-redux";
+
+import { createAxiosInstance } from "../utils";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -80,7 +81,7 @@ function VideoUpload(props) {
       thumbnail: Thumbnail,
     };
 
-    axios.post("http://localhost:3001/api/videos/video", variables).then((res) => {
+    createAxiosInstance().post("/api/videos/video", variables).then((res) => {
       if (res.data.success) {
         alert("video Uploaded Successfully");
         props.history.push("/");
@@ -99,7 +100,7 @@ function VideoUpload(props) {
     console.log(files);
     formData.append("file", files[0]);
 
-    axios.post("http://localhost:3001/api/videos/upload-video-file", formData, config).then((response) => {
+    createAxiosInstance().post("/api/videos/upload-video-file", formData, config).then((response) => {
       if (response.data.success) {
         console.log(response);
         let variable = {
@@ -109,7 +110,7 @@ function VideoUpload(props) {
         setFilePath(response.data.filePath);
         // gerenate thumbnail with this filepath !
 
-        axios.post("http://localhost:3001/api/videos/thumbnail", variable).then((response) => {
+        createAxiosInstance().post("/api/videos/thumbnail", variable).then((response) => {
           if (response.data.success) {
             console.log('동영상 길이', response.data.fileDuration);
             setDuration(response.data.fileDuration);
@@ -154,7 +155,7 @@ function VideoUpload(props) {
 
           {Thumbnail !== "" && (
             <div>
-              <img src={`http://localhost:3001/uploads/thumbnails/${Thumbnail}`} alt="haha" />
+              <img src={`${process.env.REACT_APP_SERVER_URL}/uploads/thumbnails/${Thumbnail}`} alt="haha" />
             </div>
           )}
         </div>

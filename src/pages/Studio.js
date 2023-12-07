@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { avatarChange } from "../reducers/user";
-import axios from "axios";
 
 import { createAxiosInstance } from "../utils";
 import { Button } from "antd";
@@ -94,7 +93,7 @@ function Studio() {
       ) : (
         <img
           id="profile-img"
-          src={`http://localhost:3001/uploads/avatars/${
+          src={`${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${
             DeleteClicked ? "avatar.png" : userData.avatar
           }`}
           alt="이미지"
