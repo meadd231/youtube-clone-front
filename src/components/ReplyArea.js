@@ -66,9 +66,8 @@ const ReplyArea = React.forwardRef(
             <CommentCard
               key={comment.id}
               comment={comment}
-              postReply={postReply}
               replyToCommentId={parentComment.id}
-              commentType="reply"
+              addReplyToComment={addReplyToComment}
             />
           )
       );

@@ -14,12 +14,13 @@ import {
 import { relativeDate, createAxiosInstance } from "../utils";
 import useInput from "../hooks/useInput";
 
-// 여기 내부에 좋아요, 답글 버튼도 있어야 하긴 할 것 같거든요.
+/**
+ * commentType => comment or reply
+ */
 function CommentCard({
   comment,
-  postReply,
   replyToCommentId,
-  commentType,
+  addReplyToComment,
   children,
 }) {
   const [Liked, setLiked] = useState(comment.liked);
@@ -34,10 +35,33 @@ function CommentCard({
 
   const { token } = useSelector((state) => state.user);
 
-  const postCommentLike = (type) => {
-    const commentId = commentType === "comment" ? replyToCommentId : comment.id;
+  const postReply = () => {
+    const reqBody = {
+      videoId: comment.videoId,
+      commentId: replyToCommentId,
+      content: replyInput.value,
+    };
+
     createAxiosInstance(token)
-      .post(`/api/comments/${commentId}/like`, { type })
+      .post("/api/comments/replies/reply", reqBody)
+      .then((res) => {
+        if (res.data.success) {
+          replyInput.setValue("");
+          console.log("post /api/comments/reply", res.data);
+          addReplyToComment(res.data.reply);
+          // reply 화면 갱신해주기.
+        } else {
+          alert("답글 작성 실패");
+        }
+      })
+      .catch((err) => {
+        console.error("/api/comments/replies/reply", err);
+      });
+  };
+
+  const postCommentLike = (type) => {
+    createAxiosInstance(token)
+      .post(`/api/comments/${comment.id}/like`, { type })
       .then((res) => {
         if (res.data.success) {
           console.log("post /api/comments/like", res.data);
@@ -72,9 +96,7 @@ function CommentCard({
           취소
         </Button>
         <Button
-          onClick={() => {
-            postReply(replyInput);
-          }}
+          onClick={postReply}
           {...(replyInput.value.length > 0 ? { type: "primary" } : {})}
           disabled={replyInput.value.length === 0}
         >

@@ -61,15 +61,13 @@ function CommentView({ comment }) {
     <Wrapper>
       <CommentCard
         comment={comment}
-        postReply={postReply}
         replyToCommentId={comment.id}
-        commentType="comment"
+        addReplyToComment={addReplyToComment}
       >
         <ReplyArea
           parentComment={comment}
           addReplyToComment={addReplyToComment}
           ref={replyCommentRef}
-          postReply={postReply}
         />
       </CommentCard>
     </Wrapper>
