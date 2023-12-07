@@ -110,7 +110,7 @@ function CommentCard({
       author={comment.User.nickname}
       avatar={
         <Avatar
-          src={`http://localhost:3001/uploads/avatars/${comment.User.avatar}`}
+          src={`${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${comment.User.avatar}`}
           size="large"
           gap={0}
         >

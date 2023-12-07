@@ -144,7 +144,7 @@ function CommentArea({ video }) {
           <Button type="text">정렬기준</Button>
         </Dropdown>
         <div style={{ display: "flex" }}>
-          <Avatar src={!userData ? "": `http://localhost:3001/uploads/avatars/${userData.avatar}`} style={{ verticalAlign: "middle" }} size="large" gap={0}>
+          <Avatar src={!userData ? "": `${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${userData.avatar}`} style={{ verticalAlign: "middle" }} size="large" gap={0}>
             {!userData ? "" : userData.nickname}
           </Avatar>
           <input

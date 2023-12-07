@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import styled, { css } from "styled-components";
-import { Avatar, Button } from "antd";
-import { Comment } from "@ant-design/compatible";
+import styled from "styled-components";
+import { Button } from "antd";
 
 import CommentCard from "./CommentCard";
 
 // utils
-import useInput from "../hooks/useInput";
-import { createAxiosInstance, relativeDate } from "../utils";
+import { createAxiosInstance } from "../utils";
 
 const Wrapper = styled.div``;
 

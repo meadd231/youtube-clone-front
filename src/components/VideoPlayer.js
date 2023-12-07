@@ -22,7 +22,7 @@ function VideoPlayer({ video }) {
 
     let player = new Player({
       id: 'mse',
-      url: `http://localhost:3001/${video.filePath}`,
+      url: `${process.env.REACT_APP_SERVER_URL}/${video.filePath}`,
       height: '100%',
       width: '100%',
     });

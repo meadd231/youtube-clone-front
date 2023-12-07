@@ -88,7 +88,7 @@ function VideoInfo({ video }) {
       <h1 id="title">{video.title}</h1>
       <div className="video-metadata">
         <Avatar
-          src={`http://localhost:3001/uploads/avatars/${video.author.avatar}`}
+          src={`${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${video.author.avatar}`}
           style={ {verticalAlign: "middle" }}
           size="large"
           gap={0}

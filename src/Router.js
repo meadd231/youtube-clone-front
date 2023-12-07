@@ -1,26 +1,23 @@
 import "./App.css";
 import styled from "styled-components";
-import { HamburgerIcon, UploadIcon } from "./components/Icons";
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
-  Link,
   BrowserRouter,
 } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Sidebar from "./components/Sidebar";
 
-import Home from './pages/Home';
+import Home from "./pages/Home";
 import Watch from "./pages/Watch";
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import VideoUpload from './pages/VideoUpload';
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import VideoUpload from "./pages/VideoUpload";
 import Studio from "./pages/Studio";
 
-import Auth from './hooks/auth';
+import Auth from "./hooks/auth";
 
-const ContentWrapper = styled.div.attrs({ className: 'content' })`
+const ContentWrapper = styled.div.attrs({ className: "content" })`
   display: flex;
   padding-top: 60px;
   width: 100%;

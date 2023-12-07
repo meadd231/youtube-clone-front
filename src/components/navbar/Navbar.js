@@ -107,7 +107,7 @@ function Navbar() {
                 <UploadModal closeUploadModal={closeUploadModal}></UploadModal>
               )}
               <Avatar
-                src={`http://localhost:3001/uploads/avatars/${userData.avatar}`}
+                src={`${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${userData.avatar}`}
                 style={{ verticalAlign: "middle" }}
                 gap={0}
                 onClick={showUserModal}

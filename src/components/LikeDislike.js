@@ -46,7 +46,7 @@ function LikeDislike({ video }) {
     // 토큰이 없으면 그냥 막으면 되는 것 아닌가?
     if (token) {
       createAxiosInstance(token)
-      .get(`api/videos/${video.id}/likedata`)
+      .get(`/api/videos/${video.id}/likedata`)
       .then((res) => {
         console.log("get like data", res.data);
         if (res.data.success) {
@@ -55,7 +55,7 @@ function LikeDislike({ video }) {
         }
       })
       .catch((err) => {
-        console.error("api/videos/likedata/:videoId", err);
+        console.error("/api/videos/likedata/:videoId", err);
       });
     }
   }, []);
@@ -64,14 +64,14 @@ function LikeDislike({ video }) {
   const onLike = (type) => {
     if (token) {
       createAxiosInstance(token)
-      .post(`api/videos/${video.id}/like`, { type })
+      .post(`/api/videos/${video.id}/like`, { type })
       .then((res) => {
         setLikes(res.data.likes);
         setLiked(res.data.liked);
         setDisliked(res.data.disliked);
       })
       .catch((err) => {
-        console.error("api/videos/like/:videoId", err);
+        console.error("/api/videos/like/:videoId", err);
       });
     } else {
       alert("로그인을 해주세요.");
