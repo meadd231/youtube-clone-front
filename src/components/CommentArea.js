@@ -5,6 +5,7 @@ import { Avatar, Button, Dropdown, Menu } from "antd";
 
 // components
 import CommentView from "./CommentView";
+import LoadingSpinner from "./LoadingSpinner";
 
 // utils
 import useInput from "../hooks/useInput";
@@ -29,12 +30,6 @@ const Wrapper = styled.div`
 
 function CommentArea({ video }) {
   const [CommentClicked, setCommentClicked] = useState(false);
-  const commentClick = () => {
-    if (CommentClicked) {
-      comment.setValue("");
-    }
-    setCommentClicked(!CommentClicked);
-  };
 
   // 0 - 인기, 1 - 최신
   const [Sortby, setSortby] = useState(0);
@@ -43,7 +38,15 @@ function CommentArea({ video }) {
   const comment = useInput("");
   const [Comments, setComments] = useState();
 
+  const [Loading, setLoading] = useState(false);
   const { token, userData } = useSelector((state) => state.user);
+
+  const commentClick = () => {
+    if (CommentClicked) {
+      comment.setValue("");
+    }
+    setCommentClicked(!CommentClicked);
+  };
 
   useEffect(() => {
     const axiosInstance = createAxiosInstance(token);
@@ -114,13 +117,22 @@ function CommentArea({ video }) {
   ];
 
   const postComment = () => {
+    setLoading(true);
     createAxiosInstance(token)
-      .post("/api/comments/comment", { content: comment.value, videoId: video.id })
+      .post("/api/comments/comment", {
+        content: comment.value,
+        videoId: video.id,
+      })
       .then((res) => {
-        console.log("post /api/comments/comment", res.data.comment);
-        comment.setValue("");
-        setComments([res.data.comment, ...Comments]);
-        setCommentClicked(false);
+        if (res.data.success) {
+          console.log("post /api/comments/comment", res.data.comment);
+          comment.setValue("");
+          setComments([res.data.comment, ...Comments]);
+          setCommentClicked(false);
+        } else {
+          alert("댓글 작성 실패");
+        }
+        setLoading(false);
       })
       .catch((err) => {
         console.error("post /api/comments/comment", err);
@@ -143,42 +155,51 @@ function CommentArea({ video }) {
         >
           <Button type="text">정렬기준</Button>
         </Dropdown>
-        <div style={{ display: "flex" }}>
-          <Avatar src={!userData ? "": `${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${userData.avatar}`} style={{ verticalAlign: "middle" }} size="large" gap={0}>
-            {!userData ? "" : userData.nickname}
-          </Avatar>
-          <input
-            className="comment-area"
-            {...(CommentClicked ? {} : { onClick: commentClick })}
-            placeholder="댓글 추가..."
-            onChange={comment.onChange}
-            style={{ width: "100%" }}
-            value={comment.value}
-          />
-        </div>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button className="comment-btn" onClick={commentClick} type="text">
-            취소
-          </Button>
-          <Button
-            className="comment-btn"
-            onClick={postComment}
-            {...(comment.value.length > 0 ? { type: "primary" } : {})}
-            disabled={comment.value.length === 0}
-          >
-            댓글
-          </Button>
-        </div>
+        {!Loading && <div>
+          <div style={{ display: "flex" }}>
+            <Avatar
+              src={
+                !userData
+                  ? ""
+                  : `${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${userData.avatar}`
+              }
+              style={{ verticalAlign: "middle" }}
+              size="large"
+              gap={0}
+            >
+              {!userData ? "" : userData.nickname}
+            </Avatar>
+            <input
+              className="comment-area"
+              {...(CommentClicked ? {} : { onClick: commentClick })}
+              placeholder="댓글 추가..."
+              onChange={comment.onChange}
+              style={{ width: "100%" }}
+              value={comment.value}
+            />
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button className="comment-btn" onClick={commentClick} type="text">
+              취소
+            </Button>
+            <Button
+              className="comment-btn"
+              onClick={postComment}
+              {...(comment.value.length > 0 ? { type: "primary" } : {})}
+              disabled={comment.value.length === 0}
+            >
+              댓글
+            </Button>
+          </div>
+        </div>}
+        {Loading && <LoadingSpinner />}
       </div>
       <div>
         {Comments &&
           Comments.map(
             (comment, index) =>
               !comment.commentId && (
-                <CommentView
-                  comment={comment}
-                  key={comment.id}
-                />
+                <CommentView comment={comment} key={comment.id} />
               )
           )}
       </div>

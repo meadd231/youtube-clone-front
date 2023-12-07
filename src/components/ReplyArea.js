@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import styled from "styled-components";
 import { Button } from "antd";
 
 import CommentCard from "./CommentCard";
+import LoadingSpinner from "./LoadingSpinner";
 
 // utils
 import { createAxiosInstance } from "../utils";
 
-const Wrapper = styled.div``;
 
 function ReplyArea({ parentComment, addReplyToComment, Replies, setReplies }) {
+  const [Loading, setLoading] = useState(false);
   const [OpenReplyComments, setOpenReplyComments] = useState(false);
   const [FirstCalled, setFirstCalled] = useState(false);
 
@@ -24,6 +24,7 @@ function ReplyArea({ parentComment, addReplyToComment, Replies, setReplies }) {
 
   const getReplies = () => {
     if (!FirstCalled) {
+      setLoading(true);
       createAxiosInstance(token)
         .get(`/api/comments/${parentComment.id}/replies`)
         .then((res) => {
@@ -33,6 +34,7 @@ function ReplyArea({ parentComment, addReplyToComment, Replies, setReplies }) {
           } else {
             alert("답글 조회 실패");
           }
+          setLoading(false);
         })
         .catch((err) => {
           console.error(err);
@@ -55,8 +57,8 @@ function ReplyArea({ parentComment, addReplyToComment, Replies, setReplies }) {
     );
   };
   return (
-    <Wrapper>
-      {parentComment.replyNum > 0 && (
+    <>
+      {(parentComment.replyNum > 0) && (
         <Button
           style={{ fontSize: "14px", margin: 0, color: "blue" }}
           onClick={handleChange}
@@ -66,9 +68,10 @@ function ReplyArea({ parentComment, addReplyToComment, Replies, setReplies }) {
           답글 {parentComment.replyNum}개
         </Button>
       )}
+      {Loading && <LoadingSpinner />}
 
       {OpenReplyComments && renderReplyComment(parentComment.id)}
-    </Wrapper>
+    </>
   );
 }
 export default ReplyArea;

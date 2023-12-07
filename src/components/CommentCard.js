@@ -12,6 +12,8 @@ import {
 
 import { relativeDate, createAxiosInstance } from "../utils";
 import useInput from "../hooks/useInput";
+import { ClipLoader } from "react-spinners";
+import LoadingSpinner from "./LoadingSpinner";
 
 function CommentCard({
   comment,
@@ -22,6 +24,7 @@ function CommentCard({
   const [Liked, setLiked] = useState(comment.liked);
   const [Likes, setLikes] = useState(comment.likes);
   const [Disliked, setDisliked] = useState(comment.disliked);
+  const [Loading, setLoading] = useState(false);
   const [ReplyInputOpened, setReplyInputOpened] = useState(false);
   const openReply = () => {
     setReplyInputOpened(!ReplyInputOpened);
@@ -37,20 +40,23 @@ function CommentCard({
       content: replyInput.value,
     };
 
+    setLoading(true);
     createAxiosInstance(token)
       .post("/api/comments/replies/reply", reqBody)
       .then((res) => {
         if (res.data.success) {
           console.log("post /api/comments/reply", res.data);
           replyInput.setValue("");
-          addReplyToComment(res.data.reply);
           setReplyInputOpened(false);
+          addReplyToComment(res.data.reply);
         } else {
           alert("답글 작성 실패");
         }
+        setLoading(false);
       })
       .catch((err) => {
         console.error("/api/comments/replies/reply", err);
+        setLoading(false);
       });
   };
 
@@ -72,7 +78,7 @@ function CommentCard({
       });
   };
 
-  const replyInputView = ReplyInputOpened && (
+  const replyInputView = ReplyInputOpened && !Loading && (
     <>
       <input
         className="comment-area"
@@ -138,6 +144,7 @@ function CommentCard({
       content={<p>{comment.content}</p>}
     >
       {replyInputView}
+      {Loading && <LoadingSpinner />}
       {children}
     </Comment>
   );
