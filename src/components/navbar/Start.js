@@ -26,14 +26,14 @@ function Start() {
         onClick={handleToggleSidebar}
       />
       <span>
-        <Link to="/">
+        <a href="/">
           <img
             className="logoImage"
             style={{ padding: "8px" }}
             alt="logo"
             src={process.env.PUBLIC_URL + "/img/Logo.png"}
           />
-        </Link>
+        </a>
       </span>
     </div>
   );

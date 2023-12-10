@@ -43,6 +43,7 @@ const Wrapper = styled.div`
   }
 
   .sidebar li {
+    height: 40px;
     margin-bottom: 10px;
   }
 
@@ -114,11 +115,9 @@ function Sidebar() {
             <a href="/">보관함</a>
           </li>
           <div class="horizontal-line"></div>
-          <li>구독</li>
-          <br />
+          <li><span>구독</span></li>
           <div class="horizontal-line"></div>
-          <li>탐색</li>
-          <br />
+          <li><span>탐색</span></li>
           <div class="horizontal-line"></div>
           <li>
             <a href="/">
