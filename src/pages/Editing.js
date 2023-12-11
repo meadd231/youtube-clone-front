@@ -5,8 +5,6 @@ import { avatarChange } from "../reducers/user";
 
 import { createAxiosInstance } from "../utils";
 import { Button } from "antd";
-import ImageGallery from "react-image-gallery";
-import "react-image-gallery/styles/css/image-gallery.css";
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,7 +22,7 @@ const Wrapper = styled.div`
   }
 `;
 
-function Studio() {
+function Editing() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [DeleteClicked, setDeleteClicked] = useState(false);
   const { token, userData } = useSelector((state) => state.user);
@@ -136,4 +134,4 @@ function Studio() {
   );
 }
 
-export default Studio;
+export default Editing;

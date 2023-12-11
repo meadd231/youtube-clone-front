@@ -48,7 +48,7 @@ function UploadModal({ closeUploadModal }) {
   });
   return (
     <Wrapper ref={modalRef}>
-      <Link to={"/video/upload"}>
+      <Link to={"/studio/videos"}>
         <div>동영상 업로드</div>
       </Link>
       <div>라이브 스트리밍 시작</div>

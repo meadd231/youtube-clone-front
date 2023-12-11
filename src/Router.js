@@ -12,8 +12,8 @@ import Home from "./pages/Home";
 import Watch from "./pages/Watch";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import VideoUpload from "./pages/VideoUpload";
-import Studio from "./pages/Studio";
+import VideosUpload from "./pages/VideosUpload";
+import Editing from "./pages/Editing";
 
 import Auth from "./hooks/auth";
 
@@ -34,8 +34,8 @@ function AppRouter() {
           <Route path="/watch/:videoId" element={<Watch />} />
           <Route path="/login" element={Auth(Login, false)} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/video/upload" element={Auth(VideoUpload, true)} />
-          <Route path="/studio" element={Auth(Studio, true)} />
+          <Route path="/studio/videos" element={Auth(VideosUpload, true)} />
+          <Route path="/studio" element={Auth(Editing, true)} />
         </Routes>
       </ContentWrapper>
     </BrowserRouter>
