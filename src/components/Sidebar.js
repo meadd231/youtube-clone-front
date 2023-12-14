@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled, { css } from "styled-components";
 
@@ -17,8 +17,8 @@ import {
   FeedBackIcon,
 } from "./Icons";
 
-import { Button } from "antd";
-
+import { Avatar, Button } from "antd";
+import { createAxiosInstance } from "../utils";
 const Wrapper = styled.div`
   margin: 0;
   padding: 0;
@@ -70,10 +70,38 @@ const Wrapper = styled.div`
 `;
 
 function Sidebar() {
-  console.log("sidebar");
+  const [Subscribes, setSubscribes] = useState([]);
   const { open } = useSelector((state) => state.sidebar);
+  const { token } = useSelector((state) => state.user);
   const location = useLocation();
   console.log("location", location);
+  useEffect(() => {
+    createAxiosInstance(token)
+      .get(`${process.env.REACT_APP_SERVER_URL}/api/subscribes/users`)
+      .then((res) => {
+        if (res.data.success) {
+          console.log("subscribes", res.data.subscribes);
+          setSubscribes(res.data.subscribes);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+  const subscribes = Subscribes.map((subscribe) => {
+    return (
+      <li key={subscribe.id}>
+        <a href={`/channel/${subscribe.channel.nickname}/featured`}>
+          <Button type="text" className="sidebar-item">
+            <Avatar
+              src={`${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${subscribe.channel.avatar}`}
+            />
+            <span>{subscribe.channel.nickname}</span>
+          </Button>
+        </a>
+      </li>
+    );
+  });
   return (
     <Wrapper open={open}>
       <div className="sidebar">
@@ -115,9 +143,14 @@ function Sidebar() {
             <a href="/">보관함</a>
           </li>
           <div class="horizontal-line"></div>
-          <li><span>구독</span></li>
+          <li>
+            <span>구독</span>
+          </li>
+          {Subscribes.length > 0 && subscribes}
           <div class="horizontal-line"></div>
-          <li><span>탐색</span></li>
+          <li>
+            <span>탐색</span>
+          </li>
           <div class="horizontal-line"></div>
           <li>
             <a href="/">

@@ -16,6 +16,7 @@ import VideosUpload from "./pages/VideosUpload";
 import Editing from "./pages/Editing";
 
 import Auth from "./hooks/auth";
+import Channel from "./pages/Channel";
 
 const ContentWrapper = styled.div.attrs({ className: "content" })`
   display: flex;
@@ -35,7 +36,8 @@ function AppRouter() {
           <Route path="/login" element={Auth(Login, false)} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/studio/videos" element={Auth(VideosUpload, true)} />
-          <Route path="/studio" element={Auth(Editing, true)} />
+          <Route path="/studio/editing" element={Auth(Editing, true)} />
+          <Route path="/channel/:channelName/:tapType" element={<Channel />} />
         </Routes>
       </ContentWrapper>
     </BrowserRouter>
