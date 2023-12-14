@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
+import { Link } from "react-router-dom";
 import { signup } from "../reducers/user";
 
 export const StyledAuth = styled.div`
@@ -62,22 +63,24 @@ export const StyledAuth = styled.div`
   }
 `;
 
+/**
+ * 1. local 회원가입 뷰
+ * 2. local 회원가입 핸들러
+ */
 const Signup = () => {
   const dispatch = useDispatch();
 
-  const firstname = useInput("");
-  const lastname = useInput("");
   const username = useInput("");
   const email = useInput("");
   const password1 = useInput("");
   const password2 = useInput("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  /**
+   * 1. 유효성 검사
+   * 2. dispatch로 signup 함수 전달.
+   */
+  const handleSignup = () => {
     if (
-      !firstname.value.trim() ||
-      !lastname.value.trim() ||
       !username.value.trim() ||
       !email.value.trim() ||
       !password1.value.trim() ||
@@ -101,16 +104,12 @@ const Signup = () => {
 
     const payload = {
       username: username.value,
-      firstname: firstname.value,
-      lastname: lastname.value,
       email: email.value,
       password: password1.value,
     };
 
     const clearForm = () => {
       username.setValue("");
-      firstname.setValue("");
-      lastname.setValue("");
       email.setValue("");
       password1.setValue("");
       password2.setValue("");
@@ -119,55 +118,43 @@ const Signup = () => {
     dispatch(signup({ payload, clearForm }));
   };
 
+  /**
+   * 1. input들
+   * 2. button들
+   */
   return (
     <StyledAuth>
       <h2>회원가입</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="input-group">
-          <input
-            type="text"
-            placeholder="firstname"
-            value={firstname.value}
-            onChange={firstname.onChange}
-          />
-          <input
-            type="text"
-            placeholder="lastname"
-            value={lastname.value}
-            onChange={lastname.onChange}
-          />
-        </div>
-        <input
-          type="text"
-          placeholder="username"
-          value={username.value}
-          onChange={username.onChange}
-        />
-        <input
-          type="email"
-          placeholder="email"
-          value={email.value}
-          onChange={email.onChange}
-        />
-        <div className="input-group">
-          <input
-            type="password"
-            placeholder="password"
-            value={password1.value}
-            onChange={password1.onChange}
-          />
-          <input
-            type="password"
-            placeholder="confirm"
-            value={password2.value}
-            onChange={password2.onChange}
-          />
-        </div>
-        <div className="action input-group">
-          <button>Signin instead</button>
-          <button>회원가입</button>
-        </div>
-      </form>
+      <input
+        type="text"
+        placeholder="username"
+        value={username.value}
+        onChange={username.onChange}
+      />
+      <input
+        type="email"
+        placeholder="email"
+        value={email.value}
+        onChange={email.onChange}
+      />
+      <input
+        type="password"
+        placeholder="password"
+        value={password1.value}
+        onChange={password1.onChange}
+      />
+      <input
+        type="password"
+        placeholder="confirm"
+        value={password2.value}
+        onChange={password2.onChange}
+      />
+      <div className="action input-group">
+        <Link to={"/login"}>
+          <button>로그인으로 가기</button>
+        </Link>
+        <button onClick={handleSignup}>회원가입</button>
+      </div>
     </StyledAuth>
   );
 };

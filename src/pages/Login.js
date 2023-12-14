@@ -11,32 +11,21 @@ import { createAxiosInstance } from "../utils";
 
 import { Link } from "react-router-dom";
 
-const Login = () => {
+/**
+ * 1. local 로그인 뷰
+ * 2. google 로그인 뷰
+ * 3. local 로그인 핸들러
+ * 4. google 로그인 핸들러
+ * 5. 회원가입으로 버튼
+ */
+function Login() {
   const dispatch = useDispatch();
 
   const email = useInput("");
   const password = useInput("");
 
-  const googleLogin = (res) => {
-    const credential = res.credential;
-    createAxiosInstance()
-      .post("/api/auth/google-oauth", {
-        credential,
-      })
-      .then((res) => {
-        console.log("post api/auth/google-oauth", res);
-        console.log("token", res.data.token);
-        dispatch(loginSuccess(res.data.token));
-      })
-      .catch((err) => {
-        console.error("post api/auth/google-oauth", err);
-      });
-  };
-
-  // 이벤트 핸들러
-  const handleLogin = (e) => {
-    e.preventDefault();
-
+  // 로그인 핸들러
+  const handleLogin = () => {
     if (!email.value.trim() || !password.value.trim()) {
       return toast.error("Please fill in all the fields");
     }
@@ -55,22 +44,43 @@ const Login = () => {
     clearForm();
 
     // payload는 req의 body 키로 전송된다.
-    createAxiosInstance().post("/api/auth/login", payload).then((res) => {
-      console.log("res", res);
-      const token = res.data.token;
-      // dispatch는 redux store에 액션을 전달한다.
-      dispatch(loginSuccess(token));
-    });
+    createAxiosInstance()
+      .post("/api/auth/login", payload)
+      .then((res) => {
+        console.log("res", res);
+        const token = res.data.token;
+        // dispatch는 redux store에 액션을 전달한다.
+        dispatch(loginSuccess(token));
+      });
 
     // dispatch(login({ payload, clearForm }));
   };
+
+  /**
+   * google 로그인 핸들러
+   */
+  const googleLogin = (res) => {
+    const credential = res.credential;
+    createAxiosInstance()
+      .post("/api/auth/google-oauth", {
+        credential,
+      })
+      .then((res) => {
+        console.log("post api/auth/google-oauth", res);
+        console.log("token", res.data.token);
+        dispatch(loginSuccess(res.data.token));
+      })
+      .catch((err) => {
+        console.error("post api/auth/google-oauth", err);
+      });
+  };
+
   const clientId =
     "1068422300037-8dbd9nkbtoriimouhcta0091nmn3fc0i.apps.googleusercontent.com";
 
   return (
     <StyledAuth>
       <h2>로그인</h2>
-      <form onSubmit={handleLogin}>
         <input
           type="email"
           placeholder="email"
@@ -95,11 +105,10 @@ const Login = () => {
           <Link to={"/signup"}>
             <button>회원가입</button>
           </Link>
-          <button>로그인</button>
+          <button onClick={handleLogin}>로그인</button>
         </div>
-      </form>
     </StyledAuth>
   );
-};
+}
 
 export default Login;
