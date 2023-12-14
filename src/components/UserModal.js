@@ -58,7 +58,7 @@ function UserModal({ closeUserModal }) {
   return (
     <Wrapper ref={modalRef}>
       <div>유저 정보</div>
-      <div><Link to={"studio"}>프로필 기능</Link></div>
+      <div><Link to={"studio/editing"}>프로필 기능</Link></div>
       <div onClick={logoutEvent}>로그아웃</div>
       <div>테마</div>
       <div>설정</div>
