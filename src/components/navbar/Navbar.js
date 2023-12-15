@@ -1,17 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { HamburgerIcon, MicIcon, UploadIcon, ProfileIcon } from "../Icons";
-import { Avatar, Tooltip } from "antd";
 
-import { sidebarOpen, sidebarClose } from "../../reducers/sidebar";
-import { useSelector, useDispatch } from "react-redux";
-
-import UploadModal from "../UploadModal";
-import UserModal from "../UserModal";
 import Start from "./Start";
 import Center from "./Center";
+import End from "./End";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -68,70 +60,12 @@ const Wrapper = styled.div`
 `;
 
 function Navbar() {
-  const { token, userData } = useSelector((state) => state.user);
-
-
-  const [uploadModalOpen, setUploadModalOpen] = useState(false);
-
-  const showUploadModal = (open = true) => {
-    setUploadModalOpen(open);
-  };
-
-  const closeUploadModal = () => {
-    showUploadModal(false);
-  };
-
-  const [userModalOpen, setUserModalOpen] = useState(false);
-
-  const showUserModal = (open = true) => {
-    setUserModalOpen(open);
-  };
-
-  const closeUserModal = () => {
-    setUserModalOpen(false);
-  };
-
   return (
     <Wrapper>
       <div className="navbar">
         <Start />
         <Center />
-
-        <div className="end">
-          {token ? (
-            <>
-              <Tooltip placement="bottom" title={"만들기"} arrow={false}>
-                <UploadIcon className="upload-icon" onClick={showUploadModal} />
-              </Tooltip>
-              {uploadModalOpen && (
-                <UploadModal closeUploadModal={closeUploadModal}></UploadModal>
-              )}
-              <Avatar
-                src={`${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${userData.avatar}`}
-                style={{ verticalAlign: "middle" }}
-                gap={0}
-                onClick={showUserModal}
-              >
-                {userData.nickname}
-              </Avatar>
-              {userModalOpen && (
-                <UserModal closeUserModal={closeUserModal}></UserModal>
-              )}
-            </>
-          ) : (
-            <>
-              <Link to="/login">
-                <div
-                  className="login-btn"
-                  style={{ color: "#065fd4", display: "flex" }}
-                >
-                  <ProfileIcon />
-                  <div>로그인</div>
-                </div>
-              </Link>
-            </>
-          )}
-        </div>
+        <End />
       </div>
     </Wrapper>
   );
