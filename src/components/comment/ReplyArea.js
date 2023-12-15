@@ -3,10 +3,10 @@ import { useSelector } from "react-redux";
 import { Button } from "antd";
 
 import CommentCard from "./CommentCard";
-import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "../LoadingSpinner";
 
 // utils
-import { createAxiosInstance } from "../utils";
+import { createAxiosInstance } from "../../utils";
 
 
 function ReplyArea({ parentComment, addReplyToComment, Replies, setReplies }) {

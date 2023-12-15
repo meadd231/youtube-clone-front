@@ -23,17 +23,6 @@ const Wrapper = styled.div`
     font-size: 14px;
     text-transform: uppercase;
   }
-
-  // #like {
-  //   background-color: ${(props) => (props.liked ? "#e5e5e5" : "#000000")};
-  //   border-color: ${(props) => (props.liked ? "#e5e5e5" : "#000000")};
-  //   color: ${(props) => (props.liked ? "black" : "white")};
-  // }
-
-  // #dislike {
-  //   background-color: ${(props) => (props.disliked ? "#e5e5e5" : "#000000")};
-  //   color: ${(props) => (props.disliked ? "black" : "white")};
-  // }
 `;
 
 function LikeDislike({ video }) {

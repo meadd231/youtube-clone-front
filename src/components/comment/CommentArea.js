@@ -5,11 +5,11 @@ import { Avatar, Button, Dropdown, Menu } from "antd";
 
 // components
 import CommentView from "./CommentView";
-import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "../LoadingSpinner";
 
 // utils
-import useInput from "../hooks/useInput";
-import { createAxiosInstance } from "../utils";
+import useInput from "../../hooks/useInput";
+import { createAxiosInstance } from "../../utils";
 
 const Wrapper = styled.div`
   .comment-btn {

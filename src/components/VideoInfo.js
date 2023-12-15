@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import axios from "axios";
 import { Avatar } from "antd";
 
-import CommentArea from "./CommentArea";
+import CommentArea from "./comment/CommentArea";
 import LikeDislike from "./LikeDislike";
 
 import { createAxiosInstance, relativeDate } from "../utils";

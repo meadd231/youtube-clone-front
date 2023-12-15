@@ -8,12 +8,12 @@ import {
   LikeOnIcon,
   DislikeOffIcon,
   DislikeOnIcon,
-} from "./Icons";
+} from "../Icons";
 
-import { relativeDate, createAxiosInstance } from "../utils";
-import useInput from "../hooks/useInput";
+import { relativeDate, createAxiosInstance } from "../../utils";
+import useInput from "../../hooks/useInput";
 import { ClipLoader } from "react-spinners";
-import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "../LoadingSpinner";
 
 function CommentCard({
   comment,

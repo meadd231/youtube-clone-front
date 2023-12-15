@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { createAxiosInstance } from "../utils";
+import { createAxiosInstance } from "../../utils";
 
 import ReplyArea from "./ReplyArea";
 import CommentCard from "./CommentCard";
