@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from 'react-router-dom';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../reducers/user";
 
 const Wrapper = styled.div`
@@ -30,6 +30,7 @@ function UserModal({ closeUserModal }) {
   const modalRef = useRef(null);
 
   const dispatch = useDispatch();
+  const { userData } = useSelector(state => state.user);
 
   const logoutEvent = () => {
     dispatch(logout());
@@ -57,7 +58,7 @@ function UserModal({ closeUserModal }) {
   });
   return (
     <Wrapper ref={modalRef}>
-      <div>유저 정보</div>
+      <div><a href={`/channel/${userData.nickname}/featured`}>내 채널 보기</a></div>
       <div><Link to={"studio/editing"}>프로필 기능</Link></div>
       <div onClick={logoutEvent}>로그아웃</div>
       <div>테마</div>
