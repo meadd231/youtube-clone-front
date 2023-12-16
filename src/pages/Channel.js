@@ -29,6 +29,7 @@ function Channel() {
   const { channelName } = useParams();
   const [Channel, setChannel] = useState();
   const [Subscribed, setSubscribed] = useState(false);
+  const [SubscribeNumber, setSubscribeNumber] = useState(0);
   // channel 정보 가져오기 axios
   const { token } = useSelector((state) => state.user);
   useEffect(() => {
@@ -45,22 +46,22 @@ function Channel() {
   }, []);
 
   const onSubscribe = () => {
-    // if (token) {
-    //   createAxiosInstance(token)
-    //     .post("/api/subscribes/subscribe", { writer: video.writer })
-    //     .then((res) => {
-    //       console.log(res.data);
-    //       if (res.data.type === "subscribe") {
-    //         setSubscribeNumber(SubscribeNumber + 1);
-    //         setSubscribed(true);
-    //       } else if (res.data.type === "cancel") {
-    //         setSubscribeNumber(SubscribeNumber - 1);
-    //         setSubscribed(false);
-    //       }
-    //     });
-    // } else {
-    //   alert("채널을 구독하려면 로그인하세요.");
-    // }
+    if (token) {
+      createAxiosInstance(token)
+        .post("/api/subscribes/subscribe", { writer: Channel.id })
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.type === "subscribe") {
+            setSubscribeNumber(SubscribeNumber + 1);
+            setSubscribed(true);
+          } else if (res.data.type === "cancel") {
+            setSubscribeNumber(SubscribeNumber - 1);
+            setSubscribed(false);
+          }
+        });
+    } else {
+      alert("채널을 구독하려면 로그인하세요.");
+    }
   };
 
   const onChange = (key) => {

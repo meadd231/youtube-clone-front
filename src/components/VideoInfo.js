@@ -5,6 +5,7 @@ import { Avatar } from "antd";
 
 import CommentArea from "./comment/CommentArea";
 import LikeDislike from "./LikeDislike";
+import SubscribeButton from "./SubscribeButton";
 
 import { createAxiosInstance, relativeDate } from "../utils";
 
@@ -15,18 +16,6 @@ const Wrapper = styled.div`
     max-height: 5.6rem;
     line-height: 2.8rem;
     font-weight: 600;
-  }
-
-  #subscribe-button {
-    background-color: ${(props) => (props.subscribed ? "#e5e5e5" : "#0f0f0f")};
-    border-radius: 18px;
-    color: ${(props) => (props.subscribed ? "black" : "white")};
-    padding: 0 16px;
-    font-weight: 500;
-    font-size: 14px;
-    height: 36px;
-    line-height: 36px;
-    text-transform: uppercase;
   }
 
   .video-metadata {
@@ -46,49 +35,27 @@ const Wrapper = styled.div`
 `;
 
 function VideoInfo({ video }) {
-  const [SubscribeNumber, setSubscribeNumber] = useState(video.author.subscribeNum);
-  const [Subscribed, setSubscribed] = useState(false);
+  const [SubscribeNumber, setSubscribeNumber] = useState(
+    video.author.subscribeNum
+  );
 
   const { token } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    if (token) {
-      createAxiosInstance(token).get(`/api/subscribes/${video.writer}/subscribed`).then((res) => {
-        if (res.data.success) {
-          setSubscribed(res.data.subscribed);
-        } else {
-          alert("Failed to get Subscribed Information");
-        }
-      });
-    }
-  }, []);
-
-  const onSubscribe = () => {
-    if (token) {
-      createAxiosInstance(token)
-        .post("/api/subscribes/subscribe", { writer: video.writer })
-        .then((res) => {
-          console.log(res.data);
-          if (res.data.type === "subscribe") {
-            setSubscribeNumber(SubscribeNumber + 1);
-            setSubscribed(true);
-          } else if (res.data.type === "cancel") {
-            setSubscribeNumber(SubscribeNumber - 1);
-            setSubscribed(false);
-          }
-        });
+  const increaseOrdecreaseSubNum = (bool) => {
+    if (bool) {
+      setSubscribeNumber(SubscribeNumber + 1);
     } else {
-      alert("채널을 구독하려면 로그인하세요.");
+      setSubscribeNumber(SubscribeNumber - 1);
     }
   };
 
   return (
-    <Wrapper subscribed={Subscribed}>
+    <Wrapper>
       <h1 id="title">{video.title}</h1>
       <div className="video-metadata">
         <Avatar
           src={`${process.env.REACT_APP_SERVER_URL}/uploads/avatars/${video.author.avatar}`}
-          style={ {verticalAlign: "middle" }}
+          style={{ verticalAlign: "middle" }}
           size="large"
           gap={0}
         >
@@ -98,9 +65,11 @@ function VideoInfo({ video }) {
           <span>{video.author.nickname}</span>
           <span>구독자{SubscribeNumber}명</span>
         </span>
-        <button id="subscribe-button" onClick={onSubscribe}>
-          {Subscribed ? "구독중" : "구독"}
-        </button>
+        <SubscribeButton
+          channelId={video.writer}
+          SubscribeNumber={SubscribeNumber}
+          setSubscribeNumber={setSubscribeNumber}
+        />
         <LikeDislike video={video} />
       </div>
       <div id="description">
