@@ -47,8 +47,15 @@ export const logout = () => {
 export const avatarChange = (avatar) => {
   return {
     type: "AVATAR_CHANGE",
-    payload: { avatar}
-  }
+    payload: { avatar },
+  };
+};
+
+export const channelDescriptionChange = (channelDescription) => {
+  return {
+    type: "DESCRIPTION_CHANGE",
+    payload: { channelDescription },
+  };
 };
 
 export default function reducer(state = initialState, action) {
@@ -88,6 +95,14 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         userData: { ...state.userData, avatar: action.payload.avatar },
+      };
+    case "DESCRIPTION_CHANGE":
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          channelDescription: action.payload.channelDescription,
+        },
       };
     default:
       return state;

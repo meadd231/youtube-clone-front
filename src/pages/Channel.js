@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 
 import { Tabs } from "antd";
 
+import ChannelInfoModal from "../components/ChannelInfoModal";
+
 const Wrapper = styled.div`
   width: 100%;
   align-items: center;
@@ -30,11 +32,12 @@ function Channel() {
   const [Channel, setChannel] = useState();
   const [Subscribed, setSubscribed] = useState(false);
   const [SubscribeNumber, setSubscribeNumber] = useState(0);
+  const [ChannelInfoModalOpened, setChannelInfoModalOpened] = useState(false);
   // channel 정보 가져오기 axios
   const { token } = useSelector((state) => state.user);
   useEffect(() => {
     createAxiosInstance(token)
-      .get(`${process.env.REACT_APP_SERVER_URL}/api/channels/${channelName}`)
+      .get(`${process.env.REACT_APP_SERVER_URL}/api/users/${channelName}`)
       .then((res) => {
         if (res.data.success) {
           console.log("get api/channels/:channelName", res.data);
@@ -74,16 +77,40 @@ function Channel() {
       <div>동영상</div>
       <div>여러 재생목록</div>
     </div>
-  )
+  );
+
+  const getChannelVideos = () => {
+    createAxiosInstance(token)
+      .get(`${process.env.REACT_APP_SERVER_URL}/api/videos/`)
+      .then((res) => {
+        if (res.data.success) {
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  const videosTabItems = [
+    {
+      key: "1",
+      label: "최신순",
+    },
+    {
+      key: "2",
+      label: "인기순",
+    },
+    {
+      key: "3",
+      label: "날짜순",
+    },
+  ];
   const videos = (
     <div>
-      <div>최신순 인기순 날짜순</div>
+      <Tabs defaultActiveKey="1" items={videosTabItems} onChange={onChange} />
       <div>동영상 리스트</div>
     </div>
-  )
-  const playlists = (
-    <div>생성된 재생목록</div>
-  )
+  );
+  const playlists = <div>생성된 재생목록</div>;
   const items = [
     {
       key: "1",
@@ -116,7 +143,7 @@ function Channel() {
             style={{ width: "160px", height: "160px", borderRadius: "100px" }}
           />
           <div>
-            <div style={{ fontSize: "36px"}}>{Channel.nickname}</div>
+            <div style={{ fontSize: "36px" }}>{Channel.nickname}</div>
             <div>
               <span>{Channel.nickname}</span>
               <span> · 구독자 </span>
@@ -124,7 +151,14 @@ function Channel() {
               <span> · 동영상 </span>
               <span>{Channel.videoNum}개</span>
             </div>
-            <div>정보 {'>'}</div>
+            <div onClick={() => setChannelInfoModalOpened(true)}>
+              정보 {">"}
+            </div>
+            {ChannelInfoModalOpened && (
+              <ChannelInfoModal
+                setChannelInfoModalOpened={setChannelInfoModalOpened}
+              />
+            )}
             <button id="subscribe-button" onClick={onSubscribe}>
               {Subscribed ? "구독중" : "구독"}
             </button>
