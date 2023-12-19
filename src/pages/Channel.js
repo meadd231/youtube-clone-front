@@ -7,32 +7,23 @@ import { useSelector } from "react-redux";
 import { Tabs } from "antd";
 
 import ChannelInfoModal from "../components/ChannelInfoModal";
+import SubscribeButton from "../components/SubscribeButton";
+import VideoCard from "../components/VideoCard";
 
 const Wrapper = styled.div`
   width: 100%;
   align-items: center;
   display: flex;
   flex-direction: column;
-
-  #subscribe-button {
-    background-color: ${(props) => (props.subscribed ? "#e5e5e5" : "#0f0f0f")};
-    border-radius: 18px;
-    color: ${(props) => (props.subscribed ? "black" : "white")};
-    padding: 0 16px;
-    font-weight: 500;
-    font-size: 14px;
-    height: 36px;
-    line-height: 36px;
-    text-transform: uppercase;
-  }
 `;
 
 function Channel() {
   const { channelName } = useParams();
   const [Channel, setChannel] = useState();
-  const [Subscribed, setSubscribed] = useState(false);
   const [SubscribeNumber, setSubscribeNumber] = useState(0);
   const [ChannelInfoModalOpened, setChannelInfoModalOpened] = useState(false);
+  const [VideoOrder, setVideoOrder] = useState(1);
+  const [ChannelVideos, setChannelVideos] = useState([]);
   // channel 정보 가져오기 axios
   const { token } = useSelector((state) => state.user);
   useEffect(() => {
@@ -48,24 +39,21 @@ function Channel() {
       });
   }, []);
 
-  const onSubscribe = () => {
-    if (token) {
+  useEffect(() => {
+    if (Channel) {
       createAxiosInstance(token)
-        .post("/api/subscribes/subscribe", { writer: Channel.id })
+        .get(`${process.env.REACT_APP_SERVER_URL}/api/videos/${Channel.id}`)
         .then((res) => {
-          console.log(res.data);
-          if (res.data.type === "subscribe") {
-            setSubscribeNumber(SubscribeNumber + 1);
-            setSubscribed(true);
-          } else if (res.data.type === "cancel") {
-            setSubscribeNumber(SubscribeNumber - 1);
-            setSubscribed(false);
+          if (res.data.success) {
+            console.log("get api/videos/:channelId", res.data);
+            setChannelVideos(res.data.channelVideos);
           }
+        })
+        .catch((error) => {
+          console.error(error);
         });
-    } else {
-      alert("채널을 구독하려면 로그인하세요.");
     }
-  };
+  }, [Channel, VideoOrder]);
 
   const onChange = (key) => {
     console.log(key);
@@ -78,18 +66,6 @@ function Channel() {
       <div>여러 재생목록</div>
     </div>
   );
-
-  const getChannelVideos = () => {
-    createAxiosInstance(token)
-      .get(`${process.env.REACT_APP_SERVER_URL}/api/videos/`)
-      .then((res) => {
-        if (res.data.success) {
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
   const videosTabItems = [
     {
       key: "1",
@@ -104,10 +80,21 @@ function Channel() {
       label: "날짜순",
     },
   ];
+  const videoCards = ChannelVideos.map((video, i) => {
+    return (
+      <div className="grid-item" key={i}>
+        <VideoCard video={video} />
+      </div>
+    );
+  });
   const videos = (
     <div>
-      <Tabs defaultActiveKey="1" items={videosTabItems} onChange={onChange} />
-      <div>동영상 리스트</div>
+      <Tabs
+        defaultActiveKey="1"
+        items={videosTabItems}
+        onChange={(key) => setVideoOrder(key)}
+      />
+      <div>{videoCards}</div>
     </div>
   );
   const playlists = <div>생성된 재생목록</div>;
@@ -131,7 +118,7 @@ function Channel() {
   return !Channel ? (
     <div></div>
   ) : (
-    <Wrapper subscribed={Subscribed}>
+    <Wrapper>
       <div>
         {Channel.bannerImg && (
           <div style={{ width: "1284px", height: "200px" }}>배너</div>
@@ -159,9 +146,11 @@ function Channel() {
                 setChannelInfoModalOpened={setChannelInfoModalOpened}
               />
             )}
-            <button id="subscribe-button" onClick={onSubscribe}>
-              {Subscribed ? "구독중" : "구독"}
-            </button>
+            <SubscribeButton
+              channelId={Channel.id}
+              SubscribeNumber={SubscribeNumber}
+              setSubscribeNumber={setSubscribeNumber}
+            />
           </div>
         </div>
         <Tabs defaultActiveKey="1" items={items} onChange={onChange} />

@@ -52,7 +52,7 @@ function SubscribeButton({ channelId, SubscribeNumber, setSubscribeNumber }) {
           }
         });
     }
-  });
+  }, []);
   return (
     <Wrapper subscribed={Subscribed}>
       <button id="subscribe-button" onClick={onSubscribe}>
