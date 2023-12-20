@@ -15,6 +15,20 @@ const Wrapper = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
+
+  #grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    grid-auto-rows: minmax(180px, auto);
+    gap: 20px;
+    flex: 1;
+    margin: 0 16px;
+  }
+
+  .grid-item {
+    max-width:320px;
+    height: 270px;
+  }
 `;
 
 function Channel() {
@@ -22,7 +36,7 @@ function Channel() {
   const [Channel, setChannel] = useState();
   const [SubscribeNumber, setSubscribeNumber] = useState(0);
   const [ChannelInfoModalOpened, setChannelInfoModalOpened] = useState(false);
-  const [VideoOrder, setVideoOrder] = useState(1);
+  const [VideoOrder, setVideoOrder] = useState(0);
   const [ChannelVideos, setChannelVideos] = useState([]);
   // channel 정보 가져오기 axios
   const { token } = useSelector((state) => state.user);
@@ -41,8 +55,13 @@ function Channel() {
 
   useEffect(() => {
     if (Channel) {
+      const params = {
+        video_order: VideoOrder,
+      };
       createAxiosInstance(token)
-        .get(`${process.env.REACT_APP_SERVER_URL}/api/videos/${Channel.id}`)
+        .get(`${process.env.REACT_APP_SERVER_URL}/api/videos/${Channel.id}`, {
+          params,
+        })
         .then((res) => {
           if (res.data.success) {
             console.log("get api/videos/:channelId", res.data);
@@ -68,15 +87,15 @@ function Channel() {
   );
   const videosTabItems = [
     {
-      key: "1",
+      key: "0",
       label: "최신순",
     },
     {
-      key: "2",
+      key: "1",
       label: "인기순",
     },
     {
-      key: "3",
+      key: "2",
       label: "날짜순",
     },
   ];
@@ -90,11 +109,11 @@ function Channel() {
   const videos = (
     <div>
       <Tabs
-        defaultActiveKey="1"
+        defaultActiveKey="0"
         items={videosTabItems}
         onChange={(key) => setVideoOrder(key)}
       />
-      <div>{videoCards}</div>
+      <div id="grid-container">{videoCards}</div>
     </div>
   );
   const playlists = <div>생성된 재생목록</div>;
@@ -119,7 +138,7 @@ function Channel() {
     <div></div>
   ) : (
     <Wrapper>
-      <div>
+      <div style={{ width: "1284px" }}>
         {Channel.bannerImg && (
           <div style={{ width: "1284px", height: "200px" }}>배너</div>
         )}
