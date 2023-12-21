@@ -56,10 +56,11 @@ function Channel() {
   useEffect(() => {
     if (Channel) {
       const params = {
+        channel_id: Channel.id,
         video_order: VideoOrder,
       };
       createAxiosInstance(token)
-        .get(`${process.env.REACT_APP_SERVER_URL}/api/videos/${Channel.id}`, {
+        .get(`${process.env.REACT_APP_SERVER_URL}/api/videos/channel-videos`, {
           params,
         })
         .then((res) => {
