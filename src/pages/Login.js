@@ -48,9 +48,11 @@ function Login() {
       .post("/api/auth/login", payload)
       .then((res) => {
         console.log("res", res);
-        const token = res.data.token;
+        const tokens = res.data.tokens;
         // dispatch는 redux store에 액션을 전달한다.
-        dispatch(loginSuccess(token));
+        dispatch(loginSuccess(tokens));
+      }).catch(error => {
+        console.error("post login", error);
       });
 
     // dispatch(login({ payload, clearForm }));
@@ -67,8 +69,9 @@ function Login() {
       })
       .then((res) => {
         console.log("post api/auth/google-oauth", res);
-        console.log("token", res.data.token);
-        dispatch(loginSuccess(res.data.token));
+        const tokens = res.data.tokens;
+        console.log("tokens", tokens);
+        dispatch(loginSuccess(tokens));
       })
       .catch((err) => {
         console.error("post api/auth/google-oauth", err);

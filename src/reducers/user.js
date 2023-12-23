@@ -31,10 +31,10 @@ const initialState = {
   token: null,
 };
 
-export const loginSuccess = (token) => {
+export const loginSuccess = (tokens) => {
   return {
     type: "LOGIN_SUCCESS",
-    payload: { token },
+    payload: { tokens },
   };
 };
 
@@ -61,7 +61,7 @@ export const channelDescriptionChange = (channelDescription) => {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case "LOGIN_SUCCESS":
-      const payload = action.payload.token.split(".")[1]; // [header, payload, signature]로 분리된다.
+      const payload = action.payload.tokens.accessToken.split(".")[1]; // [header, payload, signature]로 분리된다.
       // Base64 디코딩 후 JSON 파싱
       let decodedPayload = {};
       try {
@@ -83,7 +83,9 @@ export default function reducer(state = initialState, action) {
       }
       return {
         ...state,
-        token: action.payload.token,
+        token: action.payload.tokens.accessToken,
+        accessToken: action.payload.tokens.accessToken,
+        refreshToken: action.payload.tokens.refreshToken,
         userData: { ...decodedPayload },
       };
     case "LOGOUT":
