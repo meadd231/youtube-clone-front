@@ -1,5 +1,8 @@
 import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import jsonwebtoken from "jsonwebtoken";
+const jwt = jsonwebtoken;
 
 export const createAxiosInstance = (token) => {
   const axiosInstance = axios.create({
@@ -32,6 +35,52 @@ export const createAxiosInstance = (token) => {
   // );
   return axiosInstance;
 };
+
+/**
+ * 이걸 은제 호출해야 할까? 그리고 useSelector는 훅이라서 컴포넌트에서만 사용할 수 있지 않나? 그러면 이걸 어디서 token을 가져와야 하지?
+ * @returns 
+ */
+export const getAccessToken = async () => {
+  // const accessToken = useSelector((state) => state.accessToken);
+  const accessToken = localStorage.getItem('accessToken');
+
+  if (!accessToken) {
+    // Access Token이 없으면 로그인 페이지로 리다이렉트 또는 다른 처리 수행
+    return null;
+  }
+
+  try {
+    // Access Token이 유효한지 확인
+    const decodedToken = jwt.verify(accessToken, 'your-access-token-secret');
+
+    // 유효하면 현재 Access Token 반환
+    return accessToken;
+  } catch (error) {
+    // Access Token이 만료된 경우
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    if (!refreshToken) {
+      // Refresh Token이 없으면 로그인 페이지로 리다이렉트 또는 다른 처리 수행
+      return null;
+    }
+
+    // Refresh Token을 사용하여 새로운 Access Token 요청
+    const response = await fetch('http://localhost:3001/refresh', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    const data = await response.json();
+
+    // 새로운 Access Token 저장
+    localStorage.setItem('accessToken', data.accessToken);
+
+    return data.accessToken;
+  }
+}
 
 export const processDate = (datetime) => {
   return datetime.substring(0, 10);
@@ -95,38 +144,6 @@ export const client = async (endpoint, { body, ...customConfig } = {}) => {
   }
 
   return data;
-};
-
-export const timeSince = (timestamp) => {
-  const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
-
-  let interval = Math.floor(seconds / 31536000);
-
-  if (interval > 1) {
-    return interval + " years";
-  }
-
-  interval = Math.floor(seconds / 2592000);
-  if (interval > 1) {
-    return interval + " months";
-  }
-
-  interval = Math.floor(seconds / 86400);
-  if (interval > 1) {
-    return interval + " days";
-  }
-
-  interval = Math.floor(seconds / 3600);
-  if (interval > 1) {
-    return interval + " hours";
-  }
-
-  interval = Math.floor(seconds / 60);
-  if (interval > 1) {
-    return interval + " minutes";
-  }
-
-  return Math.floor(seconds) + " seconds";
 };
 
 export const upload = async (resourceType, file) => {
