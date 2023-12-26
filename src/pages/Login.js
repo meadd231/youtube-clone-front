@@ -71,6 +71,8 @@ function Login() {
         console.log("post api/auth/google-oauth", res);
         const tokens = res.data.tokens;
         console.log("tokens", tokens);
+        localStorage.setItem('accessToken', tokens.accessToken);
+        localStorage.setItem('refreshToken', tokens.refreshToken);
         dispatch(loginSuccess(tokens));
       })
       .catch((err) => {
