@@ -1,8 +1,6 @@
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import jsonwebtoken from "jsonwebtoken";
-const jwt = jsonwebtoken;
+import { jwtDecode } from "jwt-decode";
 
 export const createAxiosInstance = (token) => {
   const axiosInstance = axios.create({
@@ -33,16 +31,74 @@ export const createAxiosInstance = (token) => {
   //     }
   //   }
   // );
+  axiosInstance.interceptors.request.use(
+    async (config) => {
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        // Access Token이 없으면 로그인 페이지로 리다이렉트 또는 다른 처리 수행
+        return config;
+      }
+
+      let decodedToken = jwtDecode(accessToken);
+      console.log("Decoded Token", decodedToken);
+      let currentDate = new Date();
+
+      // JWT exp is in seconds
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        // 토큰 만료됨.
+        // 이제 여기에서 refresh token 검증
+        console.log("Token expired.");
+        // refresh token expired
+        const refreshToken = localStorage.getItem("refreshToken");
+        try {
+          // 여기에서 refresh token을 사용하여 서버에 새로운 access token을 요청
+          const response = await axios.post(
+            `${process.env.REACT_APP_SERVER_URL}/api/auth/token/refresh`,{refreshToken}
+          );
+
+          // 새로운 access token을 얻었을 경우
+          const newAccessToken = response.data.accessToken;
+
+          // 새로운 access token을 로컬 스토리지에 저장
+          localStorage.setItem("accessToken", newAccessToken);
+
+          // 만료된 토큰 대신 새로운 토큰을 요청에 사용
+          config.headers.authorization = `Bearer ${newAccessToken}`;
+
+          console.log("Token refreshed successfully");
+          return config;
+        } catch (refreshError) {
+          if (refreshError.response) {
+            const { status, data } = refreshError.response;
+
+            if (status === 401 && data.refreshTokenExpired) {
+              // refresh token 만료 에러
+              // 로그아웃 로직 추가하기
+            } else {
+              // 다른 에러
+            }
+          }
+          console.error("Error refreshing token", refreshError);
+          // 여기에서 갱신 실패 처리 로직을 추가할 수 있습니다.
+          throw refreshError; // 예외를 다시 던져서 요청을 중단하거나 다른 처리를 할 수 있습니다.
+        }
+      } else {
+        console.log("Valid token");
+        config.headers.authorization = `Bearer ${accessToken}`;
+        return config;
+      }
+    },
+    (error) => {}
+  );
   return axiosInstance;
 };
 
 /**
- * 이걸 은제 호출해야 할까? 그리고 useSelector는 훅이라서 컴포넌트에서만 사용할 수 있지 않나? 그러면 이걸 어디서 token을 가져와야 하지?
- * @returns 
+ * @returns
  */
 export const getAccessToken = async () => {
-  // const accessToken = useSelector((state) => state.accessToken);
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem("accessToken");
 
   if (!accessToken) {
     // Access Token이 없으면 로그인 페이지로 리다이렉트 또는 다른 처리 수행
@@ -51,13 +107,13 @@ export const getAccessToken = async () => {
 
   try {
     // Access Token이 유효한지 확인
-    const decodedToken = jwt.verify(accessToken, 'your-access-token-secret');
+    // const decodedToken = jsonwebtoken.verify(accessToken, 'your-access-token-secret');
 
     // 유효하면 현재 Access Token 반환
     return accessToken;
   } catch (error) {
     // Access Token이 만료된 경우
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = localStorage.getItem("refreshToken");
 
     if (!refreshToken) {
       // Refresh Token이 없으면 로그인 페이지로 리다이렉트 또는 다른 처리 수행
@@ -65,10 +121,10 @@ export const getAccessToken = async () => {
     }
 
     // Refresh Token을 사용하여 새로운 Access Token 요청
-    const response = await fetch('http://localhost:3001/refresh', {
-      method: 'POST',
+    const response = await fetch("http://localhost:3001/refresh", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ refreshToken }),
     });
@@ -76,11 +132,11 @@ export const getAccessToken = async () => {
     const data = await response.json();
 
     // 새로운 Access Token 저장
-    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem("accessToken", data.accessToken);
 
     return data.accessToken;
   }
-}
+};
 
 export const processDate = (datetime) => {
   return datetime.substring(0, 10);
