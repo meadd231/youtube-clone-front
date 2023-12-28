@@ -47,23 +47,18 @@ export const createAxiosInstance = (token) => {
       // JWT exp is in seconds
       if (decodedToken.exp * 1000 < currentDate.getTime()) {
         // 토큰 만료됨.
-        // 이제 여기에서 refresh token 검증
         console.log("Token expired.");
-        // refresh token expired
+        // refresh token 검증
         const refreshToken = localStorage.getItem("refreshToken");
         try {
           // 여기에서 refresh token을 사용하여 서버에 새로운 access token을 요청
+          // 이거 await 하지 말고 then, catch가 더 나을 것 같음. await를 쓰는 이유가 없음.
           const response = await axios.post(
             `${process.env.REACT_APP_SERVER_URL}/api/auth/token/refresh`,{refreshToken}
           );
 
-          // 새로운 access token을 얻었을 경우
           const newAccessToken = response.data.accessToken;
-
-          // 새로운 access token을 로컬 스토리지에 저장
           localStorage.setItem("accessToken", newAccessToken);
-
-          // 만료된 토큰 대신 새로운 토큰을 요청에 사용
           config.headers.authorization = `Bearer ${newAccessToken}`;
 
           console.log("Token refreshed successfully");
