@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
-export const createAxiosInstance = (token) => {
+export const createAxiosInstance = (token, loginNeed = false) => {
   const axiosInstance = axios.create({
     baseURL: `${process.env.REACT_APP_SERVER_URL}`,
     headers: {
@@ -35,8 +35,13 @@ export const createAxiosInstance = (token) => {
     async (config) => {
       const accessToken = localStorage.getItem("accessToken");
 
-      if (!accessToken) {
-        // Access Token이 없으면 로그인 페이지로 리다이렉트 또는 다른 처리 수행
+      if (loginNeed && !accessToken) {
+        const error = new Error('Login required, but access token is missing.');
+        return Promise.reject(error); // 요청 중지
+      }
+
+      if (!loginNeed && !accessToken) {
+        // 로그인이 필요 없는데 로그인이 안 된 경우. 토큰 검사 없이 그대로 요청 보내기.
         return config;
       }
 
@@ -87,50 +92,6 @@ export const createAxiosInstance = (token) => {
     (error) => {}
   );
   return axiosInstance;
-};
-
-/**
- * @returns
- */
-export const getAccessToken = async () => {
-  const accessToken = localStorage.getItem("accessToken");
-
-  if (!accessToken) {
-    // Access Token이 없으면 로그인 페이지로 리다이렉트 또는 다른 처리 수행
-    return null;
-  }
-
-  try {
-    // Access Token이 유효한지 확인
-    // const decodedToken = jsonwebtoken.verify(accessToken, 'your-access-token-secret');
-
-    // 유효하면 현재 Access Token 반환
-    return accessToken;
-  } catch (error) {
-    // Access Token이 만료된 경우
-    const refreshToken = localStorage.getItem("refreshToken");
-
-    if (!refreshToken) {
-      // Refresh Token이 없으면 로그인 페이지로 리다이렉트 또는 다른 처리 수행
-      return null;
-    }
-
-    // Refresh Token을 사용하여 새로운 Access Token 요청
-    const response = await fetch("http://localhost:3001/refresh", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ refreshToken }),
-    });
-
-    const data = await response.json();
-
-    // 새로운 Access Token 저장
-    localStorage.setItem("accessToken", data.accessToken);
-
-    return data.accessToken;
-  }
 };
 
 export const processDate = (datetime) => {
