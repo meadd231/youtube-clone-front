@@ -38,10 +38,10 @@ function Channel() {
   const [ChannelInfoModalOpened, setChannelInfoModalOpened] = useState(false);
   const [VideoOrder, setVideoOrder] = useState(0);
   const [ChannelVideos, setChannelVideos] = useState([]);
-  // channel 정보 가져오기 axios
-  const { token } = useSelector((state) => state.user);
+  
+  // get channel data
   useEffect(() => {
-    createAxiosInstance(token)
+    createAxiosInstance()
       .get(`${process.env.REACT_APP_SERVER_URL}/api/users/${channelName}`)
       .then((res) => {
         if (res.data.success) {
@@ -51,15 +51,16 @@ function Channel() {
           alert("채널 정보 조회 실패");
         }
       });
-  }, []);
+  }, [channelName]);
 
+  // get channel videos
   useEffect(() => {
     if (Channel) {
       const params = {
         channel_id: Channel.id,
         video_order: VideoOrder,
       };
-      createAxiosInstance(token)
+      createAxiosInstance()
         .get(`${process.env.REACT_APP_SERVER_URL}/api/videos/channel-videos`, {
           params,
         })
@@ -141,7 +142,7 @@ function Channel() {
     <Wrapper>
       <div style={{ width: "1284px" }}>
         {Channel.bannerImg && (
-          <div style={{ width: "1284px", height: "200px" }}>배너</div>
+          <div style={{ width: "100%", height: "200px" }}>배너</div>
         )}
         <div id="channel-header-container" style={{ display: "flex" }}>
           <img
