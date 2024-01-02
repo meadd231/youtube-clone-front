@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { Tabs } from "antd";
 
 import Images from "../components/editing/Images";
 import Details from "../components/editing/Details";
-import { createAxiosInstance } from "../utils";
 
 const Wrapper = styled.div`
   .customFileInput,
