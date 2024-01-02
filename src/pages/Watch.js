@@ -27,9 +27,8 @@ const Wrapper = styled.div`
 function Watch() {
   const [Video, setVideo] = useState({});
   const { videoId } = useParams();
-  const { token } = useSelector(state => state.user);
   useEffect(() => {
-    createAxiosInstance(token)
+    createAxiosInstance()
       .get(`/api/videos/${videoId}`)
       .then((res) => {
         console.log('video.data', res.data);
@@ -45,7 +44,7 @@ function Watch() {
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  }, [videoId]);
 
   console.log("Video.filePath", Video.filePath);
   return Object.keys(Video).length === 0 ? (
