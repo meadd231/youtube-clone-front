@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { ProfileIcon, UploadIcon } from "../Icons";
 import { Tooltip, Avatar } from "antd";
@@ -13,6 +13,8 @@ function End() {
   const { token, userData } = useSelector(state => state.user);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [userModalOpen, setUserModalOpen] = useState(false);
+
+  const location = useLocation();
   return (
     <div className="end">
       {token ? (
@@ -37,7 +39,7 @@ function End() {
         </>
       ) : (
         <>
-          <Link to="/login">
+          <Link to="/login" state={{ prev: location.pathname}}>
             <div
               className="login-btn"
               style={{ color: "#065fd4", display: "flex" }}

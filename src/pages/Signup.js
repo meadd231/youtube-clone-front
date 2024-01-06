@@ -3,8 +3,10 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
-import { Link } from "react-router-dom";
-import { signup } from "../reducers/user";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { signupSuccess } from "../reducers/user";
+
+import { createAxiosInstance } from "../utils";
 
 export const StyledAuth = styled.div`
   width: 385px;
@@ -69,6 +71,8 @@ export const StyledAuth = styled.div`
  */
 const Signup = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const username = useInput("");
   const email = useInput("");
@@ -76,10 +80,11 @@ const Signup = () => {
   const password2 = useInput("");
 
   /**
+   * 회원가입 요청 후 화면 이동
    * 1. 유효성 검사
-   * 2. dispatch로 signup 함수 전달.
+   * 2.
    */
-  const handleSignup = () => {
+  const signup = () => {
     if (
       !username.value.trim() ||
       !email.value.trim() ||
@@ -108,14 +113,17 @@ const Signup = () => {
       password: password1.value,
     };
 
-    const clearForm = () => {
-      username.setValue("");
-      email.setValue("");
-      password1.setValue("");
-      password2.setValue("");
-    };
-
-    dispatch(signup({ payload, clearForm }));
+    createAxiosInstance("", false)
+      .post("/api/auth/signup", payload)
+      .then((res) => {
+        console.log("res", res);
+        const tokens = res.data.tokens;
+        dispatch(signupSuccess(tokens));
+        navigate(location.state ? location.state.prev : "/");
+      })
+      .catch((error) => {
+        console.error("post login", error);
+      });
   };
 
   /**
@@ -153,7 +161,7 @@ const Signup = () => {
         <Link to={"/login"}>
           <button>로그인으로 가기</button>
         </Link>
-        <button onClick={handleSignup}>회원가입</button>
+        <button onClick={signup}>회원가입</button>
       </div>
     </StyledAuth>
   );

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../reducers/user";
 
@@ -26,6 +26,7 @@ function UserModal({ closeUserModal }) {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { userData } = useSelector((state) => state.user);
 
   const logoutEvent = () => {
@@ -33,7 +34,7 @@ function UserModal({ closeUserModal }) {
     closeUserModal();
 
     alert("로그아웃 되었습니다.");
-    navigate('/login');
+    navigate("/login", { state: { prev: location.pathname } });
   };
 
   useEffect(() => {

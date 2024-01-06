@@ -9,7 +9,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { createAxiosInstance } from "../utils";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 /**
  * 1. local 로그인 뷰
@@ -20,6 +20,8 @@ import { Link } from "react-router-dom";
  */
 function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const email = useInput("");
   const password = useInput("");
@@ -35,27 +37,19 @@ function Login() {
       password: password.value,
     };
 
-    const clearForm = () => {
-      email.setValue("");
-      password.setValue("");
-    };
-
-    console.log("payload", payload);
-    clearForm();
-
     // payload는 req의 body 키로 전송된다.
-    createAxiosInstance()
+    createAxiosInstance('', false)
       .post("/api/auth/login", payload)
       .then((res) => {
         console.log("res", res);
         const tokens = res.data.tokens;
         // dispatch는 redux store에 액션을 전달한다.
         dispatch(loginSuccess(tokens));
+        console.log('로그인 location', location);
+        navigate(location.state ? location.state.prev : '/');
       }).catch(error => {
         console.error("post login", error);
       });
-
-    // dispatch(login({ payload, clearForm }));
   };
 
   /**

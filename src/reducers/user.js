@@ -38,6 +38,13 @@ export const loginSuccess = (tokens) => {
   };
 };
 
+export const signupSuccess = (tokens) => {
+  return {
+    type: "SINGUP_SUCCESS",
+    payload: { tokens },
+  };
+}
+
 export const logout = () => {
   return {
     type: "LOGOUT",

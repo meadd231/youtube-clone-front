@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // function Auth2(ComposedClass, reload, adminRoute = null) {
 //   function AuthenticationCheck(props) {
@@ -38,10 +38,10 @@ import { useNavigate } from 'react-router-dom';
 
 function Auth(TargetComponent, reload, adminRoute = null) {
   function AuthenticationCheck(props) {
-    console.log('Auth', '이건 되냐?');
     const { token } = useSelector((state) => state.user);
     console.log('token', token)
     const navigate = useNavigate();
+    const location = useLocation();
     /**
      * 1. reload가 true라면 로그인이 필수인 것. reload가 false라면 로그인이 안 되야 하는 것으로 하자.
      */
@@ -51,10 +51,11 @@ function Auth(TargetComponent, reload, adminRoute = null) {
         if (!token) {
           navigate('/login');
         }
-      } else {
-        // 로그인이 필요 없을 때
+      } else if (!reload) {
+        // 로그인을 하면 안 될 때
         if (token) {
-          navigate('/');
+          console.log('로그인 location2', location);
+          navigate(location.state ? location.state.prev : '/');
         }
       }
     }, [token, navigate, reload]);
