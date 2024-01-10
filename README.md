@@ -3,8 +3,9 @@ youtube-clone frontend react
 ## Tech Stack
 - react
 - axios
-- antd
+- Ant-Design
 - react-router-dom
+- redux
 
 
 ## Features
