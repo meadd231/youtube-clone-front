@@ -74,8 +74,7 @@ function Login() {
       });
   };
 
-  const clientId =
-    "1068422300037-8dbd9nkbtoriimouhcta0091nmn3fc0i.apps.googleusercontent.com";
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   return (
     <StyledAuth>
